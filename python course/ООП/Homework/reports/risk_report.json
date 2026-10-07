@@ -1,0 +1,679 @@
+{
+  "suspicious_events": [
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 2b618c81",
+      "client_id": null,
+      "transaction_id": "2b618c81",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Крупная сумма: 142098 RUB",
+          "Перевод на новый счёт: 97717c95"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 48802f21",
+      "client_id": null,
+      "transaction_id": "48802f21",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 5bfce8d2"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: f4c22a4e",
+      "client_id": null,
+      "transaction_id": "f4c22a4e",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 306ffa9c"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 3ba6116d",
+      "client_id": null,
+      "transaction_id": "3ba6116d",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 78fbebd9"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: a6595fca",
+      "client_id": null,
+      "transaction_id": "a6595fca",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: f2118705"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 5d8d183a",
+      "client_id": null,
+      "transaction_id": "5d8d183a",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 651cb29a"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 27f87581",
+      "client_id": null,
+      "transaction_id": "27f87581",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 35162f49"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_failed",
+      "message": "Не успешно: Недостаточно средств: баланс 1000, нужно 56152.97, включая комиссию 555.97",
+      "client_id": null,
+      "transaction_id": "27f87581",
+      "meta": {
+        "error_type": "operation_error",
+        "error": "Недостаточно средств: баланс 1000, нужно 56152.97, включая комиссию 555.97"
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 19a49d6a",
+      "client_id": null,
+      "transaction_id": "19a49d6a",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: c478819f"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 5bb5ed67",
+      "client_id": null,
+      "transaction_id": "5bb5ed67",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: c478819f"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 97f745a0",
+      "client_id": null,
+      "transaction_id": "97f745a0",
+      "meta": {
+        "risk_score": 5,
+        "reasons": [
+          "Крупная сумма: 180284 RUB",
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: f2118705"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 3b3688c8",
+      "client_id": null,
+      "transaction_id": "3b3688c8",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 306ffa9c"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 3b9c5754",
+      "client_id": null,
+      "transaction_id": "3b9c5754",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 5bfce8d2"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 626ee05c",
+      "client_id": null,
+      "transaction_id": "626ee05c",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: a1015314"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 22299046",
+      "client_id": null,
+      "transaction_id": "22299046",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: 651cb29a"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 138d7e7d",
+      "client_id": null,
+      "transaction_id": "138d7e7d",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 97717c95"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 62868aab",
+      "client_id": null,
+      "transaction_id": "62868aab",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 97717c95"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 10bb0785",
+      "client_id": null,
+      "transaction_id": "10bb0785",
+      "meta": {
+        "risk_score": 2,
+        "reasons": [
+          "Частые операции: 3 за 60 мин"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_failed",
+      "message": "Не успешно: Недостаточно средств: баланс 1000, нужно 43517.87, включая комиссию 430.87",
+      "client_id": null,
+      "transaction_id": "10bb0785",
+      "meta": {
+        "error_type": "operation_error",
+        "error": "Недостаточно средств: баланс 1000, нужно 43517.87, включая комиссию 430.87"
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: bc0e73dd",
+      "client_id": null,
+      "transaction_id": "bc0e73dd",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 651cb29a"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 774d2047",
+      "client_id": null,
+      "transaction_id": "774d2047",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: a1015314"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: d9d6c7b6",
+      "client_id": null,
+      "transaction_id": "d9d6c7b6",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Крупная сумма: 290373 RUB",
+          "Перевод на новый счёт: 35162f49"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 9f609ff3",
+      "client_id": null,
+      "transaction_id": "9f609ff3",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 97717c95"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 0aafc5da",
+      "client_id": null,
+      "transaction_id": "0aafc5da",
+      "meta": {
+        "risk_score": 5,
+        "reasons": [
+          "Крупная сумма: 228726 RUB",
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: f2118705"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: f291b408",
+      "client_id": null,
+      "transaction_id": "f291b408",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 5bfce8d2"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 4518a74f",
+      "client_id": null,
+      "transaction_id": "4518a74f",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: c478819f"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: e9773f3b",
+      "client_id": null,
+      "transaction_id": "e9773f3b",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: f1e0e8c9"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: c178024c",
+      "client_id": null,
+      "transaction_id": "c178024c",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: f1e0e8c9"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 6319f8af",
+      "client_id": null,
+      "transaction_id": "6319f8af",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: c478819f"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_failed",
+      "message": "Не успешно: Недостаточно средств: баланс 3653.0199999999995, нужно 99153.72, включая комиссию 981.72",
+      "client_id": null,
+      "transaction_id": "6319f8af",
+      "meta": {
+        "error_type": "operation_error",
+        "error": "Недостаточно средств: баланс 3653.0199999999995, нужно 99153.72, включая комиссию 981.72"
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 15edaabf",
+      "client_id": null,
+      "transaction_id": "15edaabf",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: 78fbebd9"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 5bd9a464",
+      "client_id": null,
+      "transaction_id": "5bd9a464",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: a1015314"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: f73d3ca1",
+      "client_id": null,
+      "transaction_id": "f73d3ca1",
+      "meta": {
+        "risk_score": 4,
+        "reasons": [
+          "Крупная сумма: 1094012 RUB",
+          "Частые операции: 3 за 60 мин"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 769ef6be",
+      "client_id": null,
+      "transaction_id": "769ef6be",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 35162f49"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 1b857a2b",
+      "client_id": null,
+      "transaction_id": "1b857a2b",
+      "meta": {
+        "risk_score": 1,
+        "reasons": [
+          "Перевод на новый счёт: 5bfce8d2"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: cba42981",
+      "client_id": null,
+      "transaction_id": "cba42981",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: 97717c95"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: eeda5263",
+      "client_id": null,
+      "transaction_id": "eeda5263",
+      "meta": {
+        "risk_score": 2,
+        "reasons": [
+          "Частые операции: 3 за 60 мин"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_failed",
+      "message": "Не успешно: Недостаточно средств: баланс 1000, нужно 32495.74, включая комиссию 321.74",
+      "client_id": null,
+      "transaction_id": "eeda5263",
+      "meta": {
+        "error_type": "operation_error",
+        "error": "Недостаточно средств: баланс 1000, нужно 32495.74, включая комиссию 321.74"
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 7670c300",
+      "client_id": null,
+      "transaction_id": "7670c300",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: a1015314"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 50e51028",
+      "client_id": null,
+      "transaction_id": "50e51028",
+      "meta": {
+        "risk_score": 2,
+        "reasons": [
+          "Частые операции: 3 за 60 мин"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 75a4b579",
+      "client_id": null,
+      "transaction_id": "75a4b579",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 3 за 60 мин",
+          "Перевод на новый счёт: 78fbebd9"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: f6866ff5",
+      "client_id": null,
+      "transaction_id": "f6866ff5",
+      "meta": {
+        "risk_score": 2,
+        "reasons": [
+          "Частые операции: 3 за 60 мин"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "error",
+      "event_type": "transaction_blocked",
+      "message": "Заблокирована: 194e8ca8",
+      "client_id": null,
+      "transaction_id": "194e8ca8",
+      "meta": {
+        "risk_score": 3,
+        "reasons": [
+          "Частые операции: 4 за 60 мин",
+          "Перевод на новый счёт: f2118705"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-10-07T18:01:34",
+      "level": "warning",
+      "event_type": "risk_detected",
+      "message": "Средний риск: 27cb6be7",
+      "client_id": null,
+      "transaction_id": "27cb6be7",
+      "meta": {
+        "risk_score": 2,
+        "reasons": [
+          "Частые операции: 3 за 60 мин"
+        ]
+      }
+    }
+  ],
+  "suspicious_count": 44,
+  "error_stats": {
+    "transaction_blocked": 16,
+    "operation_error": 4
+  },
+  "risky_clients": [
+    {
+      "client_id": "dcbd4208",
+      "full_name": "Иванов Иван Иванович",
+      "risk_level": "medium",
+      "transaction_count": 4,
+      "total_amount": 7215
+    },
+    {
+      "client_id": "e027d402",
+      "full_name": "Петров Пётр Петрович",
+      "risk_level": "medium",
+      "transaction_count": 3,
+      "total_amount": 6136
+    },
+    {
+      "client_id": "ced363f8",
+      "full_name": "Сидоров Сидор Сидорович",
+      "risk_level": "medium",
+      "transaction_count": 3,
+      "total_amount": 4934
+    },
+    {
+      "client_id": "77953179",
+      "full_name": "Смирнова Анна Сергеевна",
+      "risk_level": "medium",
+      "transaction_count": 4,
+      "total_amount": 15179
+    },
+    {
+      "client_id": "232c12b7",
+      "full_name": "Кузнецов Олег Иванович",
+      "risk_level": "medium",
+      "transaction_count": 4,
+      "total_amount": 5877
+    },
+    {
+      "client_id": "6b1310cc",
+      "full_name": "Попова Мария Алексеевна",
+      "risk_level": "low",
+      "transaction_count": 2,
+      "total_amount": 6598
+    }
+  ]
+}

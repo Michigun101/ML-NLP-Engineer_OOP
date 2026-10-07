@@ -1,0 +1,96 @@
+{
+  "bank_name": "Демо Банк",
+  "clients_count": 6,
+  "accounts_count": 11,
+  "total_balance_rub": 2328974.82,
+  "clients": [
+    {
+      "client_id": "232c12b7",
+      "full_name": "Кузнецов Олег Иванович",
+      "age": 40,
+      "status": "active",
+      "accounts_count": 2,
+      "total_rub": 1207171.65
+    },
+    {
+      "client_id": "ced363f8",
+      "full_name": "Сидоров Сидор Сидорович",
+      "age": 35,
+      "status": "active",
+      "accounts_count": 2,
+      "total_rub": 603603.45
+    },
+    {
+      "client_id": "dcbd4208",
+      "full_name": "Иванов Иван Иванович",
+      "age": 30,
+      "status": "active",
+      "accounts_count": 3,
+      "total_rub": 244640.85
+    },
+    {
+      "client_id": "77953179",
+      "full_name": "Смирнова Анна Сергеевна",
+      "age": 28,
+      "status": "active",
+      "accounts_count": 2,
+      "total_rub": 222537.21
+    },
+    {
+      "client_id": "e027d402",
+      "full_name": "Петров Пётр Петрович",
+      "age": 25,
+      "status": "active",
+      "accounts_count": 1,
+      "total_rub": 43802.64
+    },
+    {
+      "client_id": "6b1310cc",
+      "full_name": "Попова Мария Алексеевна",
+      "age": 22,
+      "status": "active",
+      "accounts_count": 1,
+      "total_rub": 7219.02
+    }
+  ],
+  "top_3": [
+    {
+      "client_id": "232c12b7",
+      "full_name": "Кузнецов Олег Иванович",
+      "age": 40,
+      "status": "active",
+      "accounts_count": 2,
+      "total_rub": 1207171.65
+    },
+    {
+      "client_id": "ced363f8",
+      "full_name": "Сидоров Сидор Сидорович",
+      "age": 35,
+      "status": "active",
+      "accounts_count": 2,
+      "total_rub": 603603.45
+    },
+    {
+      "client_id": "dcbd4208",
+      "full_name": "Иванов Иван Иванович",
+      "age": 30,
+      "status": "active",
+      "accounts_count": 3,
+      "total_rub": 244640.85
+    }
+  ],
+  "audit_summary": {
+    "total_events": 64,
+    "by_level": {
+      "info": 20,
+      "warning": 24,
+      "error": 20
+    },
+    "by_type": {
+      "transaction_blocked": 16,
+      "risk_detected": 24,
+      "transaction_completed": 20,
+      "transaction_failed": 4
+    }
+  }
+}
