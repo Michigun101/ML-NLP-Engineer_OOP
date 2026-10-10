@@ -1,2 +1,67 @@
-# ML-NLP-Engineer
-Менторство 
+# ООП: Банковская система
+
+Учебный проект по курсу «База ООП» — модель банковской системы с клиентами, счетами, транзакциями, аудитом и риск-анализом.
+
+## 📚 Содержание
+
+- [Обзор](#обзор)
+- [Структура проекта](#структура-проекта)
+- [Требования](#требования)
+- [Запуск](#запуск)
+- [Архитектурные решения](#архитектурные-решения)
+- [Ключевые фиксы](#ключевые-фиксы)
+- [Модель данных](#модель-данных)
+- [Демонстрации](#демонстрации)
+
+---
+
+## Обзор
+
+Проект развивался 7 дней, каждый из которых добавлял новый слой функциональности:
+
+| День | Тема | Ключевые классы |
+|------|------|-----------------|
+| **1** | Базовый счёт + исключения | `BankAccount`, `AbstractAccount`, `BankAccountError` |
+| **2** | Продвинутые типы счетов | `SavingsAccount`, `PremiumAccount`, `InvestmentAccount` |
+| **3** | Банк и клиенты | `Bank`, `Client` |
+| **4** | Система транзакций | `Transaction`, `TransactionQueue`, `TransactionProcessor` |
+| **5** | Аудит и риск-анализ | `AuditLog`, `RiskAnalyzer` |
+| **6** | Комплексная демонстрация | интеграция всего |
+| **7** | Отчёты и визуализация | `ReportBuilder` |
+
+---
+
+## Структура проекта
+Homework/
+├── README.md
+├── requirements.txt
+├── day1.py # BankAccount, AbstractAccount, исключения
+├── day2.py # SavingsAccount, PremiumAccount, InvestmentAccount
+├── day3.py # Bank, Client
+├── day4.py # Transaction, TransactionQueue, TransactionProcessor
+├── day5.py # AuditLog, RiskAnalyzer
+├── day6.py # Комплексная демонстрация
+├── day7.py # ReportBuilder, графики
+└── reports/ # Отчёты и графики (создаётся автоматически)
+├── client_.txt
+├── client_.json
+├── bank_report.txt / .json
+├── risk_report.txt / .json
+├── clients.csv
+├── chart_pie.png
+├── chart_bar.png
+└── chart_history.png
+
+text
+
+---
+
+## Требования
+
+- **Python 3.11+** (используется `|` в аннотациях типов, `datetime.time`)
+- **matplotlib** (для графиков, День 7)
+
+Установка зависимостей:
+
+```bash
+pip install -r requirements.txt

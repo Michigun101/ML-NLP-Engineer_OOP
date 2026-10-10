@@ -318,7 +318,7 @@ class ReportBuilder:
         return path
 
     def chart_balance_history(self, filename="chart_history.png"):
-        """Граф движения баланса"""
+        """Граф фактического баланса банка во времени."""
         events = self.audit.get_events(event_type="transaction_completed")
 
         if not events:
@@ -328,19 +328,23 @@ class ReportBuilder:
         events.sort(key=lambda e: e["timestamp"])
 
         timestamps = []
-        cumulative = []
-        total = 0.0
+        balances = []
         for e in events:
-            amount = e["meta"].get("amount", 0)
-            total += amount
+            bank_total = e["meta"].get("bank_total")
+            if bank_total is None:
+                continue
             timestamps.append(e["timestamp"])
-            cumulative.append(total)
+            balances.append(bank_total)
+
+        if not balances:
+            print("Нет данных о балансе банка")
+            return None
 
         fig, ax = plt.subplots(figsize=(12, 6))
-        ax.plot(range(len(timestamps)), cumulative, marker="o", color="green")
-        ax.set_title("Накопленный объём выполненных транзакций RUB")
+        ax.plot(range(len(balances)), balances, marker="o", color="green")
+        ax.set_title("Баланс банка во времени (RUB)")
         ax.set_xlabel("Номер транзакции")
-        ax.set_ylabel("Накопленный объём, RUB")
+        ax.set_ylabel("Общий баланс, RUB")
         ax.grid(True, alpha=0.3)
 
         path = os.path.join(self.output_dir, filename)
@@ -361,9 +365,11 @@ if __name__ == "__main__":
 
     print("\n  1. Создание банка ")
     bank, client_ids, accounts = create_bank()
-    processor = TransactionProcessor(bank)
-    audit = AuditLog(file_path="audit_day7.log")
-    analyzer = RiskAnalyzer(bank, audit)
+    audit = AuditLog(file_path="audit_day7.log")          
+    analyzer = RiskAnalyzer(bank, audit)                  
+    processor = TransactionProcessor(                     
+        bank, analyzer=analyzer, audit=audit,
+    )
 
     print(f"   Банк: {bank.name}")
     print(f"   Клиентов: {len(bank._clients)}")

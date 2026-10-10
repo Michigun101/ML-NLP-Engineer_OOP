@@ -117,6 +117,7 @@ class Bank:
         self._clients = {}      
         self._accounts = {}     
         self._max_failed_attempts = 3
+        self._allow_operations_24h = False
 
     def _get_client(self, client_id):
         if client_id not in self._clients:
@@ -141,10 +142,10 @@ class Bank:
         return client.client_id
 
 
-        
-
-    def _check_working_hours(self):
-        now = datetime.now().time()
+    def _check_working_hours(self, current_time: time = None):
+        if self._allow_operations_24h:
+            return
+        now = current_time or datetime.now().time()
         if time(0, 0) <= now < time(5, 0):
             raise InvalidOperationError('Операции запрещены с 00:00 до 05:00')
 

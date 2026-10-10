@@ -115,10 +115,15 @@ class InvestmentAccount(BankAccount):
                 )
             if (not isinstance(amount, (int, float))
                     or isinstance(amount, bool)
-                    or amount < 0):
+                    or amount <= 0):
                 raise InvalidOperationError(
                     f'Сумма актива {active_type} должна быть неотрицательным числом, получено {amount}'
                 )
+
+            total_portfolio = sum(portfolio.values())
+            if total_portfolio > balance:
+                raise InvalidOperationError(f'Портфель ({total_portfolio}) превышает баланс счёта ({balance})')
+
 
         self._portfolio = dict(portfolio)
 
@@ -229,4 +234,29 @@ if __name__ == '__main__':
     print(f'Снятие 500: баланс = {inv._balance}')
     print(f'Портфель после снятия: {inv._portfolio}')
 
-    
+    print()
+    print('4. ТЕСТ ВАЛИДАЦИИ ИНВЕСТИЦИОННОГО СЧЁТА')
+
+    try:
+        InvestmentAccount("Тест", balance=100, portfolio={"stocks": 1_000_000})
+        print(" Портфель > баланс прошёл")
+    except InvalidOperationError as e:
+        print(f" Портфель > баланс: {e}")
+
+    try:
+        InvestmentAccount("Тест", balance=10000, portfolio={"stocks": 0})
+        print(" Ноль прошёл")
+    except InvalidOperationError as e:
+        print(f" Ноль: {e}")
+
+    try:
+        InvestmentAccount("Тест", balance=10000, portfolio={"stocks": -500})
+        print(" Отрицательная сумма прошла")
+    except InvalidOperationError as e:
+        print(f" Отрицательная сумма: {e}")
+
+    acc = InvestmentAccount("Тест", balance=10000, portfolio={"stocks": 10000})
+    print(f" Портфель == баланс: {acc._portfolio}")
+
+    acc = InvestmentAccount("Тест", balance=10000, portfolio={"stocks": 5000})
+    print(f" Портфель < баланс: {acc._portfolio}")    

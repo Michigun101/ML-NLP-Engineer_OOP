@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime,timedelta
 import time
+from datetime import time as dt_time   
+
 
 from day1 import (
     InvalidOperationError,
@@ -28,7 +30,7 @@ class Transaction:
 
     def __init__(self, transaction_type, amount, currency,
                  sender_id=None, receiver_id=None,
-                 transaction_id=None, priority=None):
+                 transaction_id=None, priority=None,is_external=False):
         
         if transaction_type not in self.ALLOWED_TYPES:
             raise InvalidOperationError( 
@@ -84,6 +86,10 @@ class Transaction:
         if priority not in (self.PRIORITY_HIGH, self.PRIORITY_NORMAL):
             raise InvalidOperationError(f'Неизвестный приоритет: {priority}. Разрешены: {self.PRIORITY_HIGH}, {self.PRIORITY_NORMAL}')
         self.priority = priority
+
+        if not isinstance(is_external, bool):
+            raise InvalidOperationError(f'is_external должен быть bool, получено {type(is_external).__name__}')
+        self.is_external = is_external
 
         self.fee = 0.0                    
         self.status = self.STATUS_PENDING
@@ -229,11 +235,13 @@ class TransactionProcessor:
     PREMIUM_FEE_RATE = 0.005              
     MAX_RETRIES = 3                       
 
-    def __init__(self, bank):
+    def __init__(self, bank, analyzer=None, audit=None):
         
         if not isinstance(bank, Bank):
             raise InvalidOperationError(f'Ожидается Bank, получено {type(bank).__name__}')
-        self.bank = bank                  
+        self.bank = bank
+        self.analyzer = analyzer       
+        self.audit = audit                  
         self.error_log = []            
         self.rates = {
             'RUB': 1.0,      # через рубль
@@ -255,35 +263,104 @@ class TransactionProcessor:
             processed.append(transaction)
         return processed
 
+    def _find_client_id(self, transaction):
+        """Найти client_id по счёту отправителя/получателя"""
+        account_id = transaction.sender_id or transaction.receiver_id
+        if account_id is None:
+            return None
+        for client in self.bank._clients.values():
+            if account_id in client.account_ids:
+                return client.client_id
+        return None
+
+    def _get_total_balance_rub(self):
+        """Общий баланс банка в RUB с конвертацией"""
+        return sum(
+            acc._balance * self.rates[acc._currency]
+            for acc in self.bank._accounts.values()
+        )
+
     def execute(self, transaction):
-        '''Выполнить одну транзакцию.'''
         if not isinstance(transaction, Transaction):
-            raise InvalidOperationError(f'Ожидается Transaction, получено {type(transaction).__name__}')
+            raise InvalidOperationError(...)
         if transaction.status != Transaction.STATUS_PENDING:
-            raise InvalidOperationError(f'Нельзя выполнить транзакцию в статусе {transaction.status}')
+            raise InvalidOperationError(...)
 
-        # Расчёт комиссии
-        transaction.fee = self._calculate_fee(transaction)
-
-        # Повторная попытка
         try:
+            # Ночной запрет
+            self.bank._check_working_hours()
+
+            # Проверка риска
+            if self.analyzer is not None:
+                risk = self.analyzer.analyze(transaction)
+                if risk["level"] == self.analyzer.RISK_HIGH:
+                    reason = f'Заблокировано: high risk ({", ".join(risk["reasons"])})'
+                    transaction.mark_failed(reason)
+                    if self.audit is not None:
+                        self.audit.log(
+                            "error", "transaction_blocked", reason,
+                            transaction_id=transaction.transaction_id,
+                            client_id=self._find_client_id(transaction),   
+                            risk_score=risk["score"],
+                            reasons=risk["reasons"],
+                        )
+                    return
+
+                if risk["level"] == self.analyzer.RISK_MEDIUM and self.audit is not None:
+                    self.audit.log(
+                        "warning", "risk_detected",
+                        f'Средний риск: {transaction.transaction_id}',
+                        transaction_id=transaction.transaction_id,
+                        client_id=self._find_client_id(transaction),   
+                        risk_score=risk["score"],
+                        reasons=risk["reasons"],
+                    )
+
+            # Расчёт комиссии
+            transaction.fee = self._calculate_fee(transaction)
+
+            # Выполнение
             self._execute_with_retry(transaction)
             transaction.mark_completed()
+
+            if self.audit is not None:
+                self.audit.log(
+                    "info", "transaction_completed",
+                    f'Выполнена: {transaction.transaction_id}',
+                    transaction_id=transaction.transaction_id,
+                    client_id=self._find_client_id(transaction),
+                    amount=transaction.amount,
+                    currency=transaction.currency,                 
+                    transaction_type=transaction.transaction_type, 
+                    bank_total=self._get_total_balance_rub(),      
+                )
+
         except Exception as e:
             transaction.fee = 0.0
             transaction.mark_failed(str(e))
-            self.error_log.append({ # фиксация ошибок
+            self.error_log.append({
                 'transaction_id': transaction.transaction_id,
                 'error': str(e),
                 'type': type(e).__name__,
             })
 
+            if self.audit is not None:
+                self.audit.log(
+                    "error", "transaction_failed",
+                    f'Не успешно: {e}',
+                    transaction_id=transaction.transaction_id,
+                    client_id=self._find_client_id(transaction),   
+                    error_type=type(e).__name__,
+                    error=str(e),
+                )
+
     def _calculate_fee(self, transaction):
-        '''Рассчет комиссий'''
         if transaction.transaction_type != Transaction.TYPE_TRANSFER:
             return 0.0
 
-        # Проверяем, есть ли у отправителя премиум акк
+        if not transaction.is_external:
+            return 0.0   # внутренний — без комиссии
+
         sender = self.bank._get_account(transaction.sender_id)
         rate = self.DEFAULT_FEE_RATE
         if isinstance(sender, PremiumAccount):
@@ -362,36 +439,53 @@ class TransactionProcessor:
         account.withdraw(amount)
 
     def _execute_transfer(self, transaction):
-        '''Перевод между счетами.'''
+        """Перевод между счетами с корректной конвертацией валют"""
         sender = self.bank._get_account(transaction.sender_id)
         receiver = self.bank._get_account(transaction.receiver_id)
 
-        total_from_sender = transaction.amount + transaction.fee
+        fee_in_tx_currency = transaction.fee
 
-        if sender._currency != receiver._currency:
-            received = self._convert(
-                transaction.amount,
-                transaction.currency,
-                receiver._currency,
-            )
-        else:
-            received = transaction.amount
+        # Приводим сумму и комиссию к валюте списания
+        amount_in_sender_currency = self._convert(
+            transaction.amount,
+            transaction.currency,         
+            sender._currency,             
+        )
+        fee_in_sender_currency = self._convert(
+            fee_in_tx_currency,
+            transaction.currency,
+            sender._currency,
+        )
+
+        total_from_sender = amount_in_sender_currency + fee_in_sender_currency
+
+        # Сумма для зачисления в валюте счёта получателя
+        received = self._convert(
+            transaction.amount,
+            transaction.currency,
+            receiver._currency,
+        )
 
         if not isinstance(sender, PremiumAccount):
             if sender._balance - total_from_sender < 0:
                 raise InsufficientFundsError(
-                    f'Недостаточно средств: баланс {sender._balance}, '
-                    f'нужно {total_from_sender}, включая комиссию {transaction.fee}'
+                    f'Недостаточно средств: баланс {sender._balance} {sender._currency}, '
+                    f'нужно {total_from_sender:.2f} {sender._currency} '
+                    f'(включая комиссию {fee_in_sender_currency:.2f} {sender._currency})'
                 )
 
+        # Проверка получателя
         if receiver._status != 'active':
-            raise InvalidOperationError(f'Счёт получателя {receiver.account_id} не активен: {receiver._status}')
+            raise InvalidOperationError(
+                f'Счёт получателя {receiver.account_id} не активен: {receiver._status}'
+            )
 
         sender.withdraw(total_from_sender)
         receiver.deposit(received)
 
     
 if __name__ == '__main__':
+    Bank._allow_operations_24h = True
     print()
     print('СИСТЕМА ТРАНЗАКЦИЙ')
     print()
@@ -428,13 +522,15 @@ if __name__ == '__main__':
     # 1. Обычный перевод basic - basic
     t1 = Transaction('transfer', 500, 'RUB',
                      sender_id=acc1.account_id,
-                     receiver_id=acc4.account_id)
+                     receiver_id=acc4.account_id,
+                     is_external=True )
     transactions.append(t1)
 
     # 2. Перевод от премиум аккаунта
     t2 = Transaction('transfer', 1000, 'RUB',
                      sender_id=acc3.account_id,
-                     receiver_id=acc1.account_id)
+                     receiver_id=acc1.account_id,
+                     is_external=True)
     transactions.append(t2)
 
     # 3. Пополнение счёта
@@ -450,7 +546,8 @@ if __name__ == '__main__':
     # 5. Перевод в USD 
     t5 = Transaction('transfer', 1000, 'RUB',
                      sender_id=acc1.account_id,
-                     receiver_id=acc_usd.account_id)
+                     receiver_id=acc_usd.account_id,
+                     is_external=True)
     transactions.append(t5)
 
     # 6. Пополнение в USD
@@ -461,7 +558,8 @@ if __name__ == '__main__':
     # 7. Недостаточно средств 
     t7 = Transaction('transfer', 999999, 'RUB',
                      sender_id=acc4.account_id,
-                     receiver_id=acc1.account_id)
+                     receiver_id=acc1.account_id,
+                     is_external=True)
     transactions.append(t7)
 
     # 8. Перевод с высоким приоритетом
@@ -554,4 +652,89 @@ if __name__ == '__main__':
 
         print(f'   acc1 после отложенной: {acc1._balance} RUB')
 
+    print('\n9. ТЕСТ ВАЛЮТНЫХ ПЕРЕВОДОВ')
+
+    acc_rub = bank.open_account(id1, 'basic', balance=10000)              # RUB
+    acc_usd2 = bank.open_account(id1, 'basic', balance=1000, currency='USD')
+
+    print(f'   acc_rub: {acc_rub._balance} RUB')
+    print(f'   acc_usd2: {acc_usd2._balance} USD')
+
+    t_rub_to_usd = Transaction('transfer', 9000, 'RUB',
+                            sender_id=acc_rub.account_id,
+                            receiver_id=acc_usd2.account_id)
+    queue2 = TransactionQueue()
+    queue2.add(t_rub_to_usd)
+    processor.process_all(queue2)
+
+    print(f'   После перевода 9000 RUB -> USD:')
+    print(f'     acc_rub:  {acc_rub._balance} RUB')
+    print(f'     acc_usd2: {acc_usd2._balance} USD')
+
+    t_usd_to_usd = Transaction('transfer', 5000, 'RUB',
+                            sender_id=acc_usd2.account_id,
+                            receiver_id=acc_usd2.account_id)  
+
     print()
+
+    print('\n10. ТЕСТ ВНУТРЕННИХ vs ВНЕШНИХ ПЕРЕВОДОВ')
+
+    t_internal = Transaction(
+        'transfer', 1000, 'RUB',
+        sender_id=acc1.account_id,
+        receiver_id=acc2.account_id,
+    )
+    fee_internal = processor._calculate_fee(t_internal)
+    print(f'   Внутренний (acc1 -> acc2, один клиент): fee={fee_internal}')
+
+    t_external = Transaction(
+        'transfer', 1000, 'RUB',
+        sender_id=acc1.account_id,
+        receiver_id=acc3.account_id,
+        is_external=True,   
+    )
+    fee_external = processor._calculate_fee(t_external)
+    print(f'   Внешний (acc1 -> acc3, разные клиенты): fee={fee_external}')
+
+    t_premium = Transaction(
+        'transfer', 1000, 'RUB',
+        sender_id=acc3.account_id,
+        receiver_id=acc1.account_id,
+        is_external=True,   
+    )
+    fee_premium = processor._calculate_fee(t_premium)
+    print(f'   Внешний от премиум (acc3 -> acc1): fee={fee_premium}')
+
+    print('\n11. ТЕСТ НОЧНОГО ЗАПРЕТА')
+
+    bank_check = Bank("NightTestBank")
+    c_night = Client("Ночной Клиент", 30, "night@mail.ru", "+79991111111", "pass")
+    id_night = bank_check.add_client(c_night)
+
+    try:
+        bank_check._check_working_hours(current_time=dt_time(2, 0))
+        print(' 02:00 — не упало')
+    except InvalidOperationError as e:
+        print(f' 02:00 — запрет: {e}')
+
+    try:
+        bank_check._check_working_hours(current_time=dt_time(10, 0))
+        print(' 10:00 — работает')
+    except InvalidOperationError as e:
+        print(f' 10:00 — упало: {e}')
+
+    Bank._allow_operations_24h = False   
+    processor_night = TransactionProcessor(bank_check)
+    acc_night = bank_check.open_account(id_night, 'basic', balance=1000)
+
+    original_check = bank_check._check_working_hours
+    bank_check._check_working_hours = lambda current_time=None: original_check(current_time=dt_time(2, 0))
+
+    t_night = Transaction('deposit', 500, 'RUB', receiver_id=acc_night.account_id)
+    processor_night.execute(t_night)
+
+    print(f' Ночная транзакция: status={t_night.status}, reason={t_night.failure_reason}')
+
+
+    bank_check._check_working_hours = original_check
+    Bank._allow_operations_24h = True

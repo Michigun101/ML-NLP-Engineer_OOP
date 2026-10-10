@@ -167,68 +167,30 @@ def _find_client_id(bank, transaction):
     return None
 
 def process_transactions(bank, transactions, audit, analyzer, processor):
-    '''Обработка всех транзакции с проверкой рисков'''
     queue = TransactionQueue()
-
-    subsection('Добавление в очередь')
     for t in transactions:
         queue.add(t)
-    print(f'В очереди: {len(queue)} транзакций')
-    print(f'   {queue}')
 
-    subsection('Проверка риска и выполнение')
-
-    results = {
-        'completed': [],
-        'failed': [],
-        'blocked': [],
-    }
+    results = {'completed': [], 'failed': [], 'blocked': []}
 
     while not queue.is_empty():
         t = queue.get_next()
         if t is None:
             break
 
-        risk = analyzer.analyze(t)
-
-        # Блокировка для high risk
-        if risk['level'] == analyzer.RISK_HIGH:
-            t.mark_failed(f'Заблокировано: high risk')
-            audit.log('error', 'transaction_blocked',
-                      f'Заблокирована: {t.transaction_id}',
-                      transaction_id=t.transaction_id,
-                      risk_score=risk['score'],
-                      reasons=risk['reasons'])
-            results['blocked'].append(t)
-            continue
-
-        # Warning для medium
-        if risk['level'] == analyzer.RISK_MEDIUM:
-            audit.log('warning', 'risk_detected',
-                      f'Средний риск: {t.transaction_id}',
-                      transaction_id=t.transaction_id,
-                      risk_score=risk['score'],
-                      reasons=risk['reasons'])
-
-        # Выполнение
-        processor.execute(t)
+        processor.execute(t)   
 
         if t.status == 'completed':
-            audit.log('info', 'transaction_completed',
-                      f'Выполнена: {t.transaction_id}',
-                      transaction_id=t.transaction_id,
-                      amount=t.amount)
             cid = _find_client_id(bank, t)
             if cid is not None:
                 analyzer.register_transaction(cid, t)
             results['completed'].append(t)
         elif t.status == 'failed':
-            audit.log('error', 'transaction_failed',
-                      f'Не успешно: {t.failure_reason}',
-                      transaction_id=t.transaction_id,
-                      error_type='operation_error',
-                      error=t.failure_reason)
-            results['failed'].append(t)
+            reason = t.failure_reason or ''
+            if 'high risk' in reason:
+                results['blocked'].append(t)
+            else:
+                results['failed'].append(t)
 
     return results
 
@@ -313,7 +275,9 @@ def main():
 
     section('1. ИНИЦИАЛИЗАЦИЯ')
     bank, client_ids, accounts = create_bank()
-    processor = TransactionProcessor(bank)
+    audit = AuditLog(file_path='audit_day6.log')
+    analyzer = RiskAnalyzer(bank, audit)
+    processor = TransactionProcessor(bank, analyzer=analyzer, audit=audit)   # ← передать
     print(f'Банк:     {bank.name}')
     print(f'Клиентов: {len(bank._clients)}')
     print(f'Счетов:   {len(bank._accounts)}')
@@ -330,10 +294,7 @@ def main():
     transactions = generate_transactions(bank, accounts)
     print(f'Всего транзакций: {len(transactions)}')
 
-    section('3. ОБРАБОТКА')
-    audit = AuditLog(file_path='audit_day6.log')
-    analyzer = RiskAnalyzer(bank, audit)
-    
+    section('3. ОБРАБОТКА')    
     results = process_transactions(bank, transactions, audit, analyzer, processor)
 
    
@@ -343,7 +304,40 @@ def main():
     section('5. ОТЧЁТЫ')
     show_reports(bank, audit, results, processor.rates)
 
+async def test_risk_bypass():
+    print()
+    print("ТЕСТ: прямой execute блокирует риск")
+
+    bank = Bank("TestBank")
+    c = Client("Иван", 30, "a@b.ru", "+79991234567", "pass")
+    id1 = bank.add_client(c)
+    acc1 = bank.open_account(id1, "basic", balance=1_000_000)
+    acc2 = bank.open_account(id1, "basic", balance=0)
+
+    audit = AuditLog()
+    analyzer = RiskAnalyzer(bank, audit)
+    processor = TransactionProcessor(bank, analyzer=analyzer, audit=audit)
+
+    t = Transaction("transfer", 500_000, "RUB",
+                    sender_id=acc1.account_id,
+                    receiver_id=acc2.account_id)
+
+    processor.execute(t)   
+    print(f"\nСтатус: {t.status}")
+    print(f"Причина: {t.failure_reason}")
+
+    assert t.status == "failed", f"Должно быть failed, получено {t.status}"
+    assert "high risk" in (t.failure_reason or ""), f"Ожидалась блокировка, получено: {t.failure_reason}"
+    print(" Транзакция заблокирована напрямую в execute")
+
+    assert acc1._balance == 1_000_000, f"Баланс должен быть нетронут: {acc1._balance}"
+    print(f" Баланс acc1 не изменился: {acc1._balance}")
+
+async def run_all():
+    main()
+    await test_risk_bypass()
 
 if __name__ == '__main__':
-    main()        
+    import asyncio
+    asyncio.run(run_all())
 

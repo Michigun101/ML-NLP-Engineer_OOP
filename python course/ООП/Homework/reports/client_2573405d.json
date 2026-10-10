@@ -1,0 +1,44 @@
+{
+  "client": {
+    "id": "2573405d",
+    "full_name": "Иванов Иван Иванович",
+    "age": 30,
+    "email": "ivanov@mail.ru",
+    "phone": "+79991000001",
+    "status": "active"
+  },
+  "accounts": [
+    {
+      "id": "18c7ae1d",
+      "type": "BankAccount",
+      "balance": 101109.0,
+      "currency": "RUB",
+      "balance_rub": 101109.0,
+      "status": "active"
+    },
+    {
+      "id": "70762f21",
+      "type": "SavingsAccount",
+      "balance": 59140.0,
+      "currency": "RUB",
+      "balance_rub": 59140.0,
+      "status": "active"
+    },
+    {
+      "id": "4240e505",
+      "type": "BankAccount",
+      "balance": 382.2555555555556,
+      "currency": "USD",
+      "balance_rub": 34403.0,
+      "status": "active"
+    }
+  ],
+  "total_rub": 194652.0,
+  "risk_profile": {
+    "transaction_count": 3,
+    "unique_receivers": 3,
+    "total_amount": 57276,
+    "risk_level": "medium"
+  },
+  "events_count": 32
+}
