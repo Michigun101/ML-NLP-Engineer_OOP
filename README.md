@@ -29,30 +29,6 @@
 | **6** | Комплексная демонстрация | интеграция всего |
 | **7** | Отчёты и визуализация | `ReportBuilder` |
 
----
-
-## Структура проекта
-Homework/
-├── README.md
-├── requirements.txt
-├── day1.py # BankAccount, AbstractAccount, исключения
-├── day2.py # SavingsAccount, PremiumAccount, InvestmentAccount
-├── day3.py # Bank, Client
-├── day4.py # Transaction, TransactionQueue, TransactionProcessor
-├── day5.py # AuditLog, RiskAnalyzer
-├── day6.py # Комплексная демонстрация
-├── day7.py # ReportBuilder, графики
-└── reports/ # Отчёты и графики (создаётся автоматически)
-├── client_.txt
-├── client_.json
-├── bank_report.txt / .json
-├── risk_report.txt / .json
-├── clients.csv
-├── chart_pie.png
-├── chart_bar.png
-└── chart_history.png
-
-text
 
 ---
 
